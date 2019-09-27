@@ -34,7 +34,7 @@
             //esta función recibe como parámetro el id de una película y se encarga de pedirle al backend la información de la misma.
             this.obtenerPelicula = function(id) {
                 var self = this;
-                $.getJSON(server + "/peliculas/" + id,
+                $.getJSON(server + "/pelicula/" + id,
                     function(data) {
                         self.cargarDetalle(data);
                         //en el caso de que no se encuentre la pelicula, redirigir a la pagina de error

@@ -117,7 +117,7 @@ movieInfo = (req, res) => {
                       };
 
                     res.send(data);
-                    console.log(data);
+                    
                     
                 }
             }) 
@@ -126,8 +126,49 @@ movieInfo = (req, res) => {
 }
 
 
+function movieSuggest(req, res) {
+    const genero = req.query.genero;
+    const anio_inicio = req.query.anio_inicio;
+    const anio_fin = req.query.anio_fin;
+    const puntuacion = req.query.puntuacion
+
+
+    //Query por defecto
+    let query = "SELECT pelicula.*, genero.nombre FROM pelicula JOIN genero ON pelicula.genero_id = genero.id";
+    //Si tengo seleccionado un genero 
+    (genero) ? query += ` where genero.nombre = '${genero}'` : false;
+    //Si tengo seleccionado un genero y 'Estreno' o 'Clásica'
+    (anio_inicio && anio_fin && genero) ? query += ` and anio BETWEEN '${anio_inicio}' and '${anio_fin}'` : false;
+    //Si tengo seleccionado 'Estreno' o 'Clásica' pero sin genero en particular
+    (anio_inicio && anio_fin && !genero) ? query += ` WHERE anio BETWEEN '${anio_inicio}' and '${anio_fin}'` : false;
+    //Si tengo seleccionado un genero y puntuación
+    (puntuacion && genero) ? query += ` and puntuacion >= ${puntuacion}` : false;
+    //Si tengo seleccionado puntuación pero sin género
+    (puntuacion && !genero) ? query += ` WHERE puntuacion >= ${puntuacion}` : false;
+
+    
+    console.log(query);
+    
+
+    database.connection.query(query, (err, results) => {
+        if (err) {
+            console.log('No funciona');
+            console.log(err);
+        } else {
+            const data = {
+                'peliculas': results
+                };
+            res.send(JSON.stringify(data));  
+        }
+
+         
+    });
+};
+
+
 module.exports = {
     movies: movies,
     genres: genres,
-    movieInfo: movieInfo
+    movieInfo: movieInfo,
+    movieSuggest: movieSuggest
 };

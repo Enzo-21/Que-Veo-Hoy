@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 app.get('/peliculas?', controller.movies);
 app.get('/generos', controller.genres);
 app.get('/pelicula/:id', controller.movieInfo);
+app.get('/peliculas/recomendacion', controller.movieSuggest);
 
 //seteamos el puerto en el cual va a escuchar los pedidos la aplicación
 var puerto = '8080';
